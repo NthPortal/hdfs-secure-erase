@@ -1,0 +1,13 @@
+/*
+
+# Source files
+!/src
+
+# Repo files
+!/*.md
+!.gitignore
+!LICENSE
+
+# Build files
+!pom.xml
+!.travis.yml
