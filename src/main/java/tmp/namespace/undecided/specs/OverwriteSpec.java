@@ -1,21 +1,21 @@
 package tmp.namespace.undecided.specs;
 
 import com.google.common.primitives.Ints;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import tmp.namespace.undecided.ErasureSpec;
+import tmp.namespace.undecided.OutputStreamErasureSpec;
+import tmp.namespace.undecided.SizedOutputStream;
+import tmp.namespace.undecided.SizedOutputStreamProvider;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
 
 /**
- * An {@link ErasureSpec} which overwrites a file (once).
+ * An {@link OutputStreamErasureSpec} which overwrites a region (once).
  */
-public final class OverwriteSpec extends ErasureSpec {
+public final class OverwriteSpec extends OutputStreamErasureSpec {
+    private static final int DEFAULT_BLOCK_SIZE = 512;
     private static final Set<ByteProvider.Reusability> exactSizeReusable =
             EnumSet.of(ByteProvider.Reusability.EXACT, ByteProvider.Reusability.PREFIX_UNLIMITED);
     private static final byte[] emptyByteArray = new byte[0];
@@ -33,18 +33,14 @@ public final class OverwriteSpec extends ErasureSpec {
     }
 
     @Override
-    public void eraseFile(FileSystem fs, Path path) throws IOException {
-        FileStatus fileStatus = fs.getFileStatus(path);
+    public void erase(SizedOutputStreamProvider provider, int blockSizeIfKnown) throws IOException {
+        int blockSize = (blockSizeIfKnown > 0) ? blockSizeIfKnown : DEFAULT_BLOCK_SIZE;
 
-        // Calculate byte counts to write
-        long length = fileStatus.getLen();
-        int blockSize = intBlockSize(fileStatus.getBlockSize());
+        try (SizedOutputStream outputStream = provider.get()) {
+            long size = outputStream.size();
+            long fullBlocks = size / blockSizeIfKnown;
+            int remainder = Ints.checkedCast(size % blockSize); // should never fail, because blockSize is an int
 
-        long fullBlocks = length / blockSize;
-        int remainder = Ints.checkedCast(length % blockSize); // should never fail, because blockSize is an int
-
-        // Write bytes
-        try (FSDataOutputStream outputStream = fs.create(path)) {
             ByteWriter writer = new ByteWriter(outputStream);
             for (long i = 0; i < fullBlocks; i++) {
                 writer.writeBytes(blockSize);
@@ -63,34 +59,19 @@ public final class OverwriteSpec extends ErasureSpec {
     }
 
     /**
-     * Returns the int value of a long block size, or {@link Integer#MAX_VALUE} if
-     * the block size does not fit in an int (unlikely).
-     *
-     * @param blockSize the long block size
-     * @return the block size as an int
-     */
-    private static int intBlockSize(long blockSize) {
-        try {
-            return Ints.checkedCast(blockSize);
-        } catch (IllegalArgumentException ignored) {
-            return Integer.MAX_VALUE;
-        }
-    }
-
-    /**
-     * Writes bytes to an {@link FSDataOutputStream output stream}.
+     * Writes bytes to an {@link OutputStream output stream}.
      */
     private class ByteWriter {
-        private final FSDataOutputStream outputStream;
+        private final OutputStream outputStream;
         private ByteProvider.Reusability reusability = ByteProvider.Reusability.NONE;
         private ByteProvider.State state = ByteProvider.State.empty();
         private byte[] bytes = emptyByteArray;
 
-        private ByteWriter(FSDataOutputStream outputStream) {this.outputStream = outputStream;}
+        private ByteWriter(OutputStream outputStream) {this.outputStream = outputStream;}
 
         /**
          * Write the specified number of bytes to the specified
-         * {@link FSDataOutputStream output stream}, using the {@link #byteProvider}
+         * {@link OutputStream output stream}, using the {@link #byteProvider}
          * (from the enclosing {@link OverwriteSpec}.
          *
          * @param count        the number of bytes to write
