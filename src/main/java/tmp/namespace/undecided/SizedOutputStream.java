@@ -9,7 +9,7 @@ import java.io.OutputStream;
  * of bytes to be written.
  */
 @NotThreadSafe
-public class SizedOutputStream extends OutputStream {
+public final class SizedOutputStream extends OutputStream {
     private final OutputStream underlying;
     private final long size;
     private long sizeRemaining;

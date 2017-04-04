@@ -1,13 +1,15 @@
 package tmp.namespace.undecided;
 
+import com.google.common.base.Preconditions;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import tmp.namespace.undecided.specs.BasicFileDeleteSpec;
+import tmp.namespace.undecided.specs.AdvancedFileDeletionSpec;
+import tmp.namespace.undecided.specs.AdvancedFileDeletionSpec.Conf;
 
 import java.io.IOException;
 
-public class SecureErase {
+public final class SecureErase {
     public static void eraseFile(String fileName, FileErasureSpecProvider provider) throws IOException {
         eraseFile(fileName, provider.get());
     }
@@ -16,16 +18,16 @@ public class SecureErase {
         if (erasureSpec.isTerminal()) {
             doEraseFile(fileName, erasureSpec);
         } else {
-            // TODO: 3/30/17 add parameter to specify this behavior
-            doEraseFile(fileName, erasureSpec.andThen(new BasicFileDeleteSpec()));
+            doEraseFile(fileName, erasureSpec.andThen(new AdvancedFileDeletionSpec(Conf.newBuilder().result())));
         }
     }
 
-    private static void doEraseFile(String fileName, FileErasureSpec erasureSpec) throws IOException {
+    private static void doEraseFile(String fileName, FileErasureSpec erasureSpec) throws IllegalArgumentException, IOException {
         Path path = new Path(fileName);
-        // TODO: 3/30/17 check that path is a regular file
-
         FileSystem fs = FileSystem.get(new Configuration());
+
+        // Check that path is a regular file
+        Preconditions.checkArgument(fs.getFileStatus(path).isFile(), "Path is not a regular file: " + path);
 
         erasureSpec.eraseFile(fs, path);
     }
