@@ -9,14 +9,9 @@ import java.io.IOException;
 /**
  * An {@link FileErasureSpec} which deletes a file.
  */
-public class BasicFileDeleteSpec extends FileErasureSpec {
+public final class BasicFileDeletionSpec extends FileDeletionSpec {
     @Override
     public void eraseFile(FileSystem fs, Path path) throws IOException {
         fs.delete(path, false);
-    }
-
-    @Override
-    public boolean isTerminal() {
-        return true;
     }
 }
