@@ -1,5 +1,6 @@
 package tmp.namespace.undecided.specs;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
@@ -100,13 +101,21 @@ public final class AdvancedFileDeletionSpec extends FileDeletionSpec {
     }
 
     private static Path findPathOfLength(FileSystem fs, Path parent, int length) throws IOException {
-        Iterator<String> names = namesOfLength(length);
+        try {
+            Iterator<String> names = namesOfLength(length);
 
-        while (names.hasNext()) {
-            Path path = new Path(parent, names.next());
-            if (!fs.exists(path)) {
-                return path;
+            while (names.hasNext()) {
+                Path path = new Path(parent, names.next());
+                if (!fs.exists(path)) {
+                    return path;
+                }
             }
+        } catch (StackOverflowError ignored) {
+            // In the astronomically unlikely case that the file name
+            // is absurdly long, nearly all possible permutations of
+            // obfuscation names are already taken as names of other
+            // files, and the iterator overflows the stack, this
+            // handles it.
         }
 
         // No file name not in use found
@@ -116,25 +125,29 @@ public final class AdvancedFileDeletionSpec extends FileDeletionSpec {
     private static Iterator<String> namesOfLength(final int length) {
         return new Iterator<String>() {
             private Iterator<Character> characterIterator = FILE_NAME_CHARS.iterator();
-            private final Iterator<String> prefixIterator = (length > 1) ? namesOfLength(length - 1) : null;
-            private String prefix = (prefixIterator != null) ? prefixIterator.next() : null;
+            private Iterator<String> prefixIteratorInstance = null;
+            private String prefix = StringUtils.leftPad("", length - 1, '0');
+
+            private Iterator<String> prefixIterator() {
+                if (prefixIteratorInstance == null && length > 1) {
+                    prefixIteratorInstance = namesOfLength(length - 1);
+                    prefixIteratorInstance.next(); // drop prefix matching initial prefix
+                }
+                return prefixIteratorInstance;
+            }
 
             @Override
             public boolean hasNext() {
-                return characterIterator.hasNext() || (prefixIterator != null && prefixIterator.hasNext());
+                return characterIterator.hasNext() || (prefixIterator() != null && prefixIterator().hasNext());
             }
 
             @Override
             public String next() {
                 if (characterIterator.hasNext()) {
-                    if (prefix != null) {
-                        return prefix + characterIterator.next();
-                    } else {
-                        return characterIterator.next().toString();
-                    }
+                    return prefix + characterIterator.next();
                 } else {
-                    if (prefixIterator != null) {
-                        prefix = prefixIterator.next();
+                    if (prefixIterator() != null) {
+                        prefix = prefixIterator().next();
                         characterIterator = FILE_NAME_CHARS.iterator();
                         return next();
                     } else {
