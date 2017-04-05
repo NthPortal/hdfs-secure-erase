@@ -24,11 +24,11 @@ public final class SecureErase {
 
     private static void doEraseFile(String fileName, FileErasureSpec erasureSpec) throws IllegalArgumentException, IOException {
         Path path = new Path(fileName);
-        FileSystem fs = FileSystem.get(new Configuration());
+        try (FileSystem fs = FileSystem.get(new Configuration())) {
+            // Check that path is a regular file
+            Preconditions.checkArgument(fs.getFileStatus(path).isFile(), "Path is not a regular file: " + path);
 
-        // Check that path is a regular file
-        Preconditions.checkArgument(fs.getFileStatus(path).isFile(), "Path is not a regular file: " + path);
-
-        erasureSpec.eraseFile(fs, path);
+            erasureSpec.eraseFile(fs, path);
+        }
     }
 }
