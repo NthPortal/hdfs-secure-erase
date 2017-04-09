@@ -12,6 +12,8 @@ import java.io.IOException;
  * A specification for erasing a file.
  */
 public abstract class FileErasureSpec extends ErasureSpec {
+    private static final long MAX_INT = Integer.MAX_VALUE;
+
     /**
      * Erases a file.
      *
@@ -165,15 +167,13 @@ public abstract class FileErasureSpec extends ErasureSpec {
          * @return the block size as an int
          */
         private static int intBlockSize(long blockSize) {
-            if (blockSize <= 0) {
-                return -1;
-            } else {
-                try {
-                    return Ints.checkedCast(blockSize);
-                } catch (IllegalArgumentException ignored) {
-                    return Integer.MAX_VALUE;
+            while (blockSize > MAX_INT) {
+                if ((blockSize & 1) == 1) {
+                    return -1;
                 }
+                blockSize >>= 1;
             }
+            return Ints.checkedCast(blockSize); // should never fail after of loop
         }
     }
 }
