@@ -14,6 +14,12 @@ abstract class ErasureSpec {
      */
     public abstract boolean isTerminal();
 
+    /**
+     * Requires that this {@code ErasureSpec} is not terminal.
+     *
+     * @throws UnsupportedOperationException if this ErasureSpec is terminal
+     * @see #isTerminal()
+     */
     protected final void requireNonTerminal() throws UnsupportedOperationException {
         if (isTerminal()) {
             throw new UnsupportedOperationException("A terminal ErasureSpec cannot be followed by other erasures");

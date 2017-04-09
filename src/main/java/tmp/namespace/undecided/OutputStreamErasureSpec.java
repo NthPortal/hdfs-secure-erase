@@ -10,17 +10,20 @@ import java.io.IOException;
  */
 public abstract class OutputStreamErasureSpec extends ErasureSpec {
     /**
-     * Erases data whose location is referenced by a given {@code OutputStream}.
+     * Erases data whose location is referenced by a provided {@code OutputStream}.
+     *
+     * <p>A non-positive value for {@code blockSizeIfKnown} indicates that the
+     * block size is not known.
      *
      * @param provider         a provider for a {@link SizedOutputStream}
-     * @param blockSizeIfKnown the block size of the medium being written to; -1
-     *                         if the block size is not known
+     * @param blockSizeIfKnown the block size of the medium being written to, if
+     *                         if is known.
      * @throws IOException if an I/O error occurs during the erasure
      */
     public abstract void erase(SizedOutputStreamProvider provider, int blockSizeIfKnown) throws IOException;
 
     /**
-     * Returns a new {@code OutputStreamErasureSpec} which erases by executing
+     * Returns an {@code OutputStreamErasureSpec} which erases by executing
      * {@link #erase(SizedOutputStreamProvider, int)} on this
      * {@code OutputStreamErasureSpec} and then on the specified
      * {@code OutputStreamErasureSpec}.
@@ -39,7 +42,7 @@ public abstract class OutputStreamErasureSpec extends ErasureSpec {
     }
 
     /**
-     * Returns a new {@code OutputStreamErasureSpec} which erases files by executing
+     * Returns an {@code OutputStreamErasureSpec} which erases files by executing
      * {@link #erase(SizedOutputStreamProvider, int)} on this
      * {@code OutputStreamErasureSpec} a specified number of times.
      *

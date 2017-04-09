@@ -44,7 +44,7 @@ public final class ByteProviders {
     }
 
     /**
-     * Returns a ByteProvider which provides {@code 0}-value bytes (bytes with the value {@code 0}.
+     * Returns a ByteProvider which provides {@code 0}-value bytes (bytes with the value {@code 0}).
      *
      * @return a ByteProvider which provides 0-value bytes
      */

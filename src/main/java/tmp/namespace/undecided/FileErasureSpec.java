@@ -22,7 +22,7 @@ public abstract class FileErasureSpec extends ErasureSpec {
     public abstract void eraseFile(FileSystem fs, Path path) throws IOException;
 
     /**
-     * Returns a new {@code FileErasureSpec} which erases files by executing
+     * Returns a {@code FileErasureSpec} which erases files by executing
      * {@link #eraseFile(FileSystem, Path)} on this
      * {@code FileErasureSpec} and then on the specified {@code FileErasureSpec}.
      *
@@ -39,7 +39,7 @@ public abstract class FileErasureSpec extends ErasureSpec {
     }
 
     /**
-     * Returns a new {@code FileErasureSpec} which erases files by executing
+     * Returns a {@code FileErasureSpec} which erases files by executing
      * {@link #eraseFile(FileSystem, Path)} on this
      * {@code FileErasureSpec} a specified number of times.
      *
