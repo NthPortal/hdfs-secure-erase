@@ -1,11 +1,13 @@
 package tmp.namespace.undecided.specs;
 
+import com.google.common.util.concurrent.Uninterruptibles;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Configurable specification for deleting files.
@@ -13,6 +15,7 @@ import java.util.*;
 public final class AdvancedFileDeletionSpec extends FileDeletionSpec {
     private static final long SMALL_FILE_THRESHOLD = 64;
     private static final List<Character> FILE_NAME_CHARS;
+    private static final long TRUNCATE_WAIT_MILLIS = 50;
 
     static {
         // Create list of possible characters for file names
@@ -75,12 +78,12 @@ public final class AdvancedFileDeletionSpec extends FileDeletionSpec {
         if (size > SMALL_FILE_THRESHOLD) {
             // Resize to power of 2 bytes
             size = 1L << (Long.SIZE - 1 - Long.numberOfLeadingZeros(size));
-            fs.truncate(path, size);
+            truncateToSize(fs, path, size);
 
             // Cut size in half until small
             while (size > SMALL_FILE_THRESHOLD) {
                 size >>= 1;
-                fs.truncate(path, size);
+                truncateToSize(fs, path, size);
             }
         }
 
@@ -100,7 +103,26 @@ public final class AdvancedFileDeletionSpec extends FileDeletionSpec {
         // until size is 0
         while (size > 0) {
             size -= (Math.max(size >> 3, 1));
-            fs.truncate(path, size);
+            truncateToSize(fs, path, size);
+        }
+    }
+
+    /**
+     * Truncates a file to a specified size, waiting if necessary for the truncation
+     * to finish.
+     *
+     * @param fs   the file system on which the file resides
+     * @param path the path to the file
+     * @param size the desired size of the file in bytes
+     * @throws IOException if an I/O error occurs while truncating the file
+     */
+    private static void truncateToSize(FileSystem fs, Path path, long size) throws IOException {
+        boolean res = fs.truncate(path, size);
+        if (!res) {
+            // loop and wait until file is truncated
+            do {
+                Uninterruptibles.sleepUninterruptibly(TRUNCATE_WAIT_MILLIS, TimeUnit.MILLISECONDS);
+            } while (fs.getFileStatus(path).getLen() != size);
         }
     }
 
