@@ -1,8 +1,8 @@
 package tmp.namespace.undecided;
 
-import com.google.common.base.Preconditions;
-
 import java.io.IOException;
+
+import static com.google.common.base.Preconditions.*;
 
 /**
  * A specification for erasing something which can be written to
@@ -35,10 +35,11 @@ public abstract class OutputStreamErasureSpec extends ErasureSpec {
      * @throws UnsupportedOperationException if this OutputStreamErasureSpec is
      *                                       {@link #isTerminal() terminal}
      */
-    public final OutputStreamErasureSpec andThen(OutputStreamErasureSpec other) {
-        Preconditions.checkNotNull(other);
+    public final OutputStreamErasureSpec andThen(OutputStreamErasureSpec other)
+            throws NullPointerException, UnsupportedOperationException {
+        checkNotNull(other);
         requireNonTerminal();
-        return new Cons(this, other);
+        return this.equals(other) ? Repeated.apply(this, 2) : new Cons(this, other);
     }
 
     /**
@@ -54,9 +55,11 @@ public abstract class OutputStreamErasureSpec extends ErasureSpec {
      * @throws UnsupportedOperationException if this OutputStreamErasureSpec is
      *                                       {@link #isTerminal() terminal}
      */
-    public final OutputStreamErasureSpec repeated(int times) {
+    public final OutputStreamErasureSpec repeated(int times)
+            throws IllegalArgumentException, UnsupportedOperationException {
+        checkArgument(times > 0, "must be repeated a positive number of times");
         requireNonTerminal();
-        return new Repeated(this, times);
+        return (times == 1) ? this : Repeated.apply(this, times);
     }
 
     /**
@@ -106,6 +109,16 @@ public abstract class OutputStreamErasureSpec extends ErasureSpec {
         @Override
         public boolean isTerminal() {
             return false;
+        }
+
+        /** static factory */
+        private static Repeated apply(OutputStreamErasureSpec spec, int times) {
+            if (spec instanceof Repeated) {
+                Repeated repeated = (Repeated) spec;
+                return new Repeated(repeated.spec, repeated.times * times);
+            } else {
+                return new Repeated(spec, times);
+            }
         }
     }
 }
