@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public final class AdvancedFileDeletionSpec extends FileDeletionSpec {
     private static final long SMALL_FILE_THRESHOLD = 64;
     private static final List<Character> FILE_NAME_CHARS;
-    private static final long TRUNCATE_WAIT_MILLIS = 50;
+    private static final long TRUNCATE_WAIT_MILLIS = 20;
 
     static {
         // Create list of possible characters for file names
