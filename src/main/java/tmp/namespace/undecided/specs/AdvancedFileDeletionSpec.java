@@ -261,12 +261,32 @@ public final class AdvancedFileDeletionSpec extends FileDeletionSpec {
         }
 
         /**
+         * Returns a new {@link Builder} with the same values as this {@code Conf}.
+         *
+         * @return a new Builder with the same values as this Conf
+         */
+        public Builder toBuilder() {
+            return newBuilder()
+                    .obfuscateFileName(obfuscateFileName)
+                    .obfuscateFileSize(obfuscateFileSize);
+        }
+
+        /**
          * Returns a new configuration builder.
          *
          * @return a new configuration builder.
          */
         public static Builder newBuilder() {
             return new Builder();
+        }
+
+        /**
+         * Returns the default {@code Conf}.
+         *
+         * @return the default Conf.
+         */
+        public static Conf defaultConf() {
+            return newBuilder().result();
         }
 
         /**
