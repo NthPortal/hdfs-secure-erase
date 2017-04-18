@@ -1,4 +1,6 @@
-package tmp.namespace.undecided;
+package tmp.namespace.undecided.cli;
+
+import tmp.namespace.undecided.core.FileErasureSpec;
 
 /**
  * Provides an {@link FileErasureSpec}.

@@ -1,8 +1,8 @@
-package tmp.namespace.undecided.specs;
+package tmp.namespace.undecided.core.specs;
 
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import tmp.namespace.undecided.FileErasureSpec;
+import tmp.namespace.undecided.core.FileErasureSpec;
 
 import java.io.IOException;
 

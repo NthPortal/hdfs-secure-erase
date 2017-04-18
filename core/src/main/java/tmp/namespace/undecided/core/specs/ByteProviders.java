@@ -1,4 +1,4 @@
-package tmp.namespace.undecided.specs;
+package tmp.namespace.undecided.core.specs;
 
 import com.google.common.base.Preconditions;
 

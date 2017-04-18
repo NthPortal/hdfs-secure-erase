@@ -1,4 +1,4 @@
-package tmp.namespace.undecided;
+package tmp.namespace.undecided.core;
 
 import com.google.common.primitives.Ints;
 import org.apache.hadoop.fs.FileStatus;

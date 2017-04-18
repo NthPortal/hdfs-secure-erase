@@ -1,6 +1,6 @@
-package tmp.namespace.undecided.specs;
+package tmp.namespace.undecided.core.specs;
 
-import tmp.namespace.undecided.FileErasureSpec;
+import tmp.namespace.undecided.core.FileErasureSpec;
 
 /**
  * Abstract specification for deleting files.

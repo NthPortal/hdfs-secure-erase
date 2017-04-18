@@ -1,4 +1,4 @@
-package tmp.namespace.undecided;
+package tmp.namespace.undecided.core;
 
 import java.io.IOException;
 import java.io.OutputStream;

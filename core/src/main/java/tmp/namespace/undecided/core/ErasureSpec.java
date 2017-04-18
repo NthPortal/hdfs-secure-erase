@@ -1,4 +1,4 @@
-package tmp.namespace.undecided;
+package tmp.namespace.undecided.core;
 
 /**
  * A specification for erasing something.

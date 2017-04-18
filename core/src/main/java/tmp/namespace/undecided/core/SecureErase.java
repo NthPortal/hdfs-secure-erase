@@ -1,4 +1,4 @@
-package tmp.namespace.undecided;
+package tmp.namespace.undecided.core;
 
 import com.google.common.base.Preconditions;
 import org.apache.hadoop.conf.Configuration;
