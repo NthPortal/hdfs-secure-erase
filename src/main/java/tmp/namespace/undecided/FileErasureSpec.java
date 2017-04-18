@@ -1,6 +1,5 @@
 package tmp.namespace.undecided;
 
-import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -8,10 +7,14 @@ import org.apache.hadoop.fs.Path;
 
 import java.io.IOException;
 
+import static com.google.common.base.Preconditions.*;
+
 /**
  * A specification for erasing a file.
  */
 public abstract class FileErasureSpec extends ErasureSpec {
+    private static final long MAX_INT = Integer.MAX_VALUE;
+
     /**
      * Erases a file.
      *
@@ -28,14 +31,15 @@ public abstract class FileErasureSpec extends ErasureSpec {
      *
      * @param other the FileErasureSpec to use after this one
      * @return a new FileErasureSpec combining this and the other FileErasureSpec
-     * @throws NullPointerException if `other` is null
+     * @throws NullPointerException          if `other` is null
      * @throws UnsupportedOperationException if this FileErasureSpec is
      *                                       {@link #isTerminal() terminal}
      */
-    public final FileErasureSpec andThen(FileErasureSpec other) throws NullPointerException, UnsupportedOperationException {
-        Preconditions.checkNotNull(other);
+    public final FileErasureSpec andThen(FileErasureSpec other)
+            throws NullPointerException, UnsupportedOperationException {
+        checkNotNull(other);
         requireNonTerminal();
-        return new Cons(this, other);
+        return this.equals(other) ? Repeated.apply(this, 2) : new Cons(this, other);
     }
 
     /**
@@ -51,9 +55,9 @@ public abstract class FileErasureSpec extends ErasureSpec {
      *                                       {@link #isTerminal() terminal}
      */
     public final FileErasureSpec repeated(int times) throws IllegalArgumentException, UnsupportedOperationException {
-        Preconditions.checkArgument(times > 0, "must be repeated a positive number of times");
+        checkArgument(times > 0, "must be repeated a positive number of times");
         requireNonTerminal();
-        return (times == 1) ? this : new Repeated(this, times);
+        return (times == 1) ? this : Repeated.apply(this, times);
     }
 
     /**
@@ -126,6 +130,16 @@ public abstract class FileErasureSpec extends ErasureSpec {
         public boolean isTerminal() {
             return false;
         }
+
+        /** static factory */
+        private static Repeated apply(FileErasureSpec spec, int times) {
+            if (spec instanceof Repeated) {
+                Repeated repeated = (Repeated) spec;
+                return new Repeated(repeated.spec, repeated.times * times);
+            } else {
+                return new Repeated(spec, times);
+            }
+        }
     }
 
     /**
@@ -165,15 +179,13 @@ public abstract class FileErasureSpec extends ErasureSpec {
          * @return the block size as an int
          */
         private static int intBlockSize(long blockSize) {
-            if (blockSize <= 0) {
-                return -1;
-            } else {
-                try {
-                    return Ints.checkedCast(blockSize);
-                } catch (IllegalArgumentException ignored) {
-                    return Integer.MAX_VALUE;
+            while (blockSize > MAX_INT) {
+                if ((blockSize & 1) == 1) {
+                    return -1;
                 }
+                blockSize >>= 1;
             }
+            return Ints.checkedCast(blockSize); // should never fail after of loop
         }
     }
 }
