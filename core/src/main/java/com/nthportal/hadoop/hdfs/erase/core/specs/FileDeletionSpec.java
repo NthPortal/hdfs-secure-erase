@@ -1,6 +1,6 @@
-package tmp.namespace.undecided.core.specs;
+package com.nthportal.hadoop.hdfs.erase.core.specs;
 
-import tmp.namespace.undecided.core.FileErasureSpec;
+import com.nthportal.hadoop.hdfs.erase.core.FileErasureSpec;
 
 /**
  * Abstract specification for deleting files.

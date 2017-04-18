@@ -1,8 +1,8 @@
-package tmp.namespace.undecided.core.specs;
+package com.nthportal.hadoop.hdfs.erase.core.specs;
 
+import com.nthportal.hadoop.hdfs.erase.core.FileErasureSpec;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import tmp.namespace.undecided.core.FileErasureSpec;
 
 import java.io.IOException;
 

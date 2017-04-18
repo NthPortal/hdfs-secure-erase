@@ -1,4 +1,4 @@
-package tmp.namespace.undecided.core;
+package com.nthportal.hadoop.hdfs.erase.core;
 
 import java.io.IOException;
 import java.io.OutputStream;
