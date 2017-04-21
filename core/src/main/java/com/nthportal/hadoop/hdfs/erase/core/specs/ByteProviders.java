@@ -91,6 +91,11 @@ public final class ByteProviders {
         Preconditions.checkNotNull(toRepeat);
         Preconditions.checkArgument(toRepeat.length > 0, "Byte array must be non-empty");
 
+        // Simplify provider if array is of size 1
+        if (toRepeat.length == 1) {
+            return repeatedBytes(toRepeat[0]);
+        }
+
         return new ByteProvider() {
             @Override
             public Reusability nextBytes(byte[] bytes, State state) {
