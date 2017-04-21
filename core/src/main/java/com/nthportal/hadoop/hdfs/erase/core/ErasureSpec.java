@@ -1,9 +1,13 @@
 package com.nthportal.hadoop.hdfs.erase.core;
 
+import org.apache.hadoop.conf.Configuration;
+
 /**
  * A specification for erasing something.
  */
-abstract class ErasureSpec {
+abstract class ErasureSpec extends NonNullConfigured {
+    private boolean loggingEnabled = false;
+
     /**
      * Returns whether or not this {@code ErasureSpec} is terminal.
      *
@@ -13,6 +17,23 @@ abstract class ErasureSpec {
      * @return whether or not this ErasureSpec is terminal
      */
     public abstract boolean isTerminal();
+
+    @Override
+    public void setConf(Configuration conf) {
+        super.setConf(conf);
+        loggingEnabled = conf.getBoolean(SecureErase.Conf.LOG_ACTIONS, false);
+    }
+
+    /**
+     * Returns {@code true} if logging is enabled; {@code false}
+     * if it is not enabled and this erasure specification should not
+     * log its actions.
+     *
+     * @return true if logging is enabled; false otherwise
+     */
+    protected final boolean isLoggingEnabled() {
+        return loggingEnabled;
+    }
 
     /**
      * Requires that this {@code ErasureSpec} is not terminal.

@@ -1,6 +1,7 @@
 package com.nthportal.hadoop.hdfs.erase.core;
 
 import com.google.common.primitives.Ints;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -105,6 +106,13 @@ public abstract class FileErasureSpec extends ErasureSpec {
         public boolean isTerminal() {
             return last.isTerminal();
         }
+
+        @Override
+        public void setConf(Configuration conf) {
+            super.setConf(conf);
+            first.setConf(conf);
+            last.setConf(conf);
+        }
     }
 
     /**
@@ -129,6 +137,12 @@ public abstract class FileErasureSpec extends ErasureSpec {
         @Override
         public boolean isTerminal() {
             return false;
+        }
+
+        @Override
+        public void setConf(Configuration conf) {
+            super.setConf(conf);
+            spec.setConf(conf);
         }
 
         /** static factory */
@@ -169,6 +183,12 @@ public abstract class FileErasureSpec extends ErasureSpec {
         @Override
         public boolean isTerminal() {
             return spec.isTerminal();
+        }
+
+        @Override
+        public void setConf(Configuration conf) {
+            super.setConf(conf);
+            spec.setConf(conf);
         }
 
         /**

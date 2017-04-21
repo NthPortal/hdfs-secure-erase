@@ -240,8 +240,9 @@ final class OptionProcessor {
      */
     private void eraseFiles(FileErasureSpec spec) throws IOException {
         // TODO: 4/20/17 maybe handle globbing?
+        SecureErase secureErase = new SecureErase();
         for (String arg : cmd.getArgs()) {
-            SecureErase.eraseFile(arg, spec);
+            secureErase.eraseFile(arg, spec);
         }
     }
 }
