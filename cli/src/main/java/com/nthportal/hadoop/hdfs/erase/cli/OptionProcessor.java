@@ -9,6 +9,7 @@ import com.nthportal.hadoop.hdfs.erase.core.specs.OverwriteSpec;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.hadoop.conf.Configuration;
 
 import java.io.IOException;
 
@@ -239,8 +240,11 @@ final class OptionProcessor {
      * @throws IOException if an error occurred while erasing files
      */
     private void eraseFiles(FileErasureSpec spec) throws IOException {
+        Configuration conf = new Configuration();
+        conf.setBoolean(SecureErase.Conf.LOG_ACTIONS, has(Opts.VERBOSE));
+        SecureErase secureErase = new SecureErase(conf);
+
         // TODO: 4/20/17 maybe handle globbing?
-        SecureErase secureErase = new SecureErase();
         for (String arg : cmd.getArgs()) {
             secureErase.eraseFile(arg, spec);
         }
