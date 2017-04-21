@@ -4,7 +4,7 @@ import com.nthportal.hadoop.hdfs.erase.cli.ArgParser.Opts;
 import com.nthportal.hadoop.hdfs.erase.core.FileErasureSpec;
 import com.nthportal.hadoop.hdfs.erase.core.SecureErase;
 import com.nthportal.hadoop.hdfs.erase.core.specs.AdvancedFileDeletionSpec;
-import com.nthportal.hadoop.hdfs.erase.core.specs.ByteProviders;
+import com.nthportal.hadoop.hdfs.erase.core.specs.ByteProvider;
 import com.nthportal.hadoop.hdfs.erase.core.specs.OverwriteSpec;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.codec.DecoderException;
@@ -121,7 +121,7 @@ final class OptionProcessor {
             String iterationsStr = cmd.getOptionValue(Opts.ITERATIONS);
             try {
                 int iterations = Integer.parseInt(iterationsStr);
-                FileErasureSpec spec = FileErasureSpec.from(new OverwriteSpec(ByteProviders.randomBytes()).repeated(iterations));
+                FileErasureSpec spec = FileErasureSpec.from(new OverwriteSpec(ByteProvider.randomBytes()).repeated(iterations));
                 eraseAndPossiblyRemove(spec);
             } catch (NumberFormatException e) {
                 throw new CliOptionException("Invalid iteration count: " + iterationsStr, e);
@@ -142,7 +142,7 @@ final class OptionProcessor {
      * @throws IOException if an error occurred while erasing files
      */
     private void defaultEraseFiles() throws IOException {
-        eraseWithRemoval(FileErasureSpec.from(new OverwriteSpec(ByteProviders.randomBytes()).repeated(DEFAULT_ITERATIONS)));
+        eraseWithRemoval(FileErasureSpec.from(new OverwriteSpec(ByteProvider.randomBytes()).repeated(DEFAULT_ITERATIONS)));
     }
 
     /**
@@ -185,7 +185,7 @@ final class OptionProcessor {
      * @throws CliOptionException if the byte pattern is invalid
      */
     private static FileErasureSpec parseBytePattern(String pattern) throws CliOptionException {
-        return FileErasureSpec.from(new OverwriteSpec(ByteProviders.repeatedBytes(bytesFromString(pattern))));
+        return FileErasureSpec.from(new OverwriteSpec(ByteProvider.repeatedBytes(bytesFromString(pattern))));
     }
 
     /**
