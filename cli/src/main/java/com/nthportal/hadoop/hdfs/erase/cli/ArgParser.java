@@ -36,6 +36,7 @@ final class ArgParser {
      */
     private static Options makeOptions() {
         Options options = new Options();
+        Option opt;
 
         options.addOption(new Option(
                 Opts.HELP_SHORT,
@@ -49,18 +50,22 @@ final class ArgParser {
                 false,
                 "shows version information"));
 
-        options.addOption(new Option(
+        opt = new Option(
                 Opts.ITERATIONS_SHORT,
                 Opts.ITERATIONS,
                 true,
                 "the number of times to overwrite the file(s) with random data "
-                        + "(default " + OptionProcessor.DEFAULT_ITERATIONS + ")"));
+                        + "(default " + OptionProcessor.DEFAULT_ITERATIONS + ")");
+        opt.setArgName(Names.ITERATIONS_ARG);
+        options.addOption(opt);
 
-        options.addOption(new Option(
+        opt = new Option(
                 Opts.BYTE_PATTERNS_SHORT,
                 Opts.BYTE_PATTERNS,
                 true,
-                "a comma-separated sequence of byte patterns (represented in hex)"));
+                "a comma-separated sequence of byte patterns (represented in hex)");
+        opt.setArgName(Names.PATTERNS_ARG);
+        options.addOption(opt);
 
         options.addOption(new Option(
                 Opts.REMOVE_SHORT,
@@ -68,19 +73,23 @@ final class ArgParser {
                 false,
                 "truncate and remove the file(s) after overwriting"));
 
-        options.addOption(new Option(
+        opt = new Option(
                 Opts.SPEC_SHORT,
                 Opts.SPEC,
                 true,
                 "the name of a `" + FileErasureSpec.class.getSimpleName() + "` "
-                        + "to use (must have a default constructor"));
+                        + "to use (must have a default constructor");
+        opt.setArgName(Names.CLASS_ARG);
+        options.addOption(opt);
 
-        options.addOption(new Option(
+        opt = new Option(
                 Opts.PROVIDER_SHORT,
                 Opts.PROVIDER,
                 true,
                 "the name of a `" + FileErasureSpecProvider.class.getSimpleName()+ "` "
-                        + "to use (must have a default constructor"));
+                        + "to use (must have a default constructor");
+        opt.setArgName(Names.CLASS_ARG);
+        options.addOption(opt);
 
         return options;
     }
@@ -90,7 +99,7 @@ final class ArgParser {
      */
     static void printHelp() {
         printVersion();
-        new HelpFormatter().printHelp("", Holder.options, true);
+        new HelpFormatter().printHelp(Names.COMMAND_NAME + " [OPTIONS] FILE [FILES...]", Holder.options);
     }
 
     /**
@@ -98,13 +107,16 @@ final class ArgParser {
      */
     static void printVersion() {
         String version = ArgParser.class.getPackage().getImplementationVersion();
-        System.out.println("hdfs-secure-erase version " + ((version != null) ? version : "UNKNOWN"));
+        System.out.println(Names.COMMAND_NAME + " version " + ((version != null) ? version : "UNKNOWN"));
+        System.out.println();
     }
 
     /**
      * Command-line options
      */
-    static class Opts {
+    static final class Opts {
+        private Opts() {}
+
         static String HELP_SHORT = "h";
         static String HELP = "help";
         static String VERSION_SHORT = "v";
@@ -119,5 +131,13 @@ final class ArgParser {
         static String SPEC = "erasure-spec";
         static String PROVIDER_SHORT = "p";
         static String PROVIDER = "erasure-spec-provider";
+    }
+
+    private static class Names {
+        private static String COMMAND_NAME = "hdfs-secure-erase";
+
+        private static String ITERATIONS_ARG = "COUNT";
+        private static String PATTERNS_ARG = "PATTERNS";
+        private static String CLASS_ARG = "CLASS";
     }
 }
