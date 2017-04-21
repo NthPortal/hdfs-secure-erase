@@ -77,8 +77,8 @@ final class ArgParser {
                 Opts.SPEC_SHORT,
                 Opts.SPEC,
                 true,
-                "the name of a `" + FileErasureSpec.class.getSimpleName() + "` "
-                        + "to use (must have a default constructor");
+                "the name of a " + FileErasureSpec.class.getSimpleName() + " "
+                        + "to use (must have a default constructor)");
         opt.setArgName(Names.CLASS_ARG);
         options.addOption(opt);
 
@@ -86,8 +86,8 @@ final class ArgParser {
                 Opts.PROVIDER_SHORT,
                 Opts.PROVIDER,
                 true,
-                "the name of a `" + FileErasureSpecProvider.class.getSimpleName()+ "` "
-                        + "to use (must have a default constructor");
+                "the name of a " + FileErasureSpecProvider.class.getSimpleName()+ " "
+                        + "to use (must have a default constructor)");
         opt.setArgName(Names.CLASS_ARG);
         options.addOption(opt);
 
