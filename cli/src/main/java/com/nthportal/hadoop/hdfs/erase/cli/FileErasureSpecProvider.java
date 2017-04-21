@@ -1,4 +1,6 @@
-package tmp.namespace.undecided;
+package com.nthportal.hadoop.hdfs.erase.cli;
+
+import com.nthportal.hadoop.hdfs.erase.core.FileErasureSpec;
 
 /**
  * Provides an {@link FileErasureSpec}.

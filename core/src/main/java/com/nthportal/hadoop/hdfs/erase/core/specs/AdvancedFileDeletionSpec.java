@@ -1,4 +1,4 @@
-package tmp.namespace.undecided.specs;
+package com.nthportal.hadoop.hdfs.erase.core.specs;
 
 import com.google.common.util.concurrent.Uninterruptibles;
 import org.apache.commons.lang.StringUtils;

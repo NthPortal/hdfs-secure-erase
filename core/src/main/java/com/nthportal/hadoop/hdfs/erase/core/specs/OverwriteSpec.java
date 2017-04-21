@@ -1,9 +1,9 @@
-package tmp.namespace.undecided.specs;
+package com.nthportal.hadoop.hdfs.erase.core.specs;
 
 import com.google.common.primitives.Ints;
-import tmp.namespace.undecided.OutputStreamErasureSpec;
-import tmp.namespace.undecided.SizedOutputStream;
-import tmp.namespace.undecided.SizedOutputStreamProvider;
+import com.nthportal.hadoop.hdfs.erase.core.OutputStreamErasureSpec;
+import com.nthportal.hadoop.hdfs.erase.core.SizedOutputStream;
+import com.nthportal.hadoop.hdfs.erase.core.SizedOutputStreamProvider;
 
 import java.io.IOException;
 import java.io.OutputStream;

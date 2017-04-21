@@ -1,4 +1,4 @@
-package tmp.namespace.undecided;
+package com.nthportal.hadoop.hdfs.erase.core;
 
 /**
  * A specification for erasing something.
