@@ -4,6 +4,7 @@ import com.google.common.primitives.Ints;
 import com.nthportal.hadoop.hdfs.erase.core.OutputStreamErasureSpec;
 import com.nthportal.hadoop.hdfs.erase.core.SizedOutputStream;
 import com.nthportal.hadoop.hdfs.erase.core.SizedOutputStreamProvider;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -19,6 +20,7 @@ public final class OverwriteSpec extends OutputStreamErasureSpec {
     private static final Set<ByteProvider.Reusability> exactSizeReusable =
             EnumSet.of(ByteProvider.Reusability.EXACT, ByteProvider.Reusability.PREFIX_UNLIMITED);
     private static final byte[] emptyByteArray = new byte[0];
+    private static final Logger logger = Logger.getLogger(OverwriteSpec.class);
 
     private final ByteProvider byteProvider;
 
@@ -34,6 +36,10 @@ public final class OverwriteSpec extends OutputStreamErasureSpec {
 
     @Override
     public void erase(SizedOutputStreamProvider provider, int blockSizeIfKnown) throws IOException {
+        if (isLoggingEnabled()) {
+            logger.info("Overwriting with " + byteProvider.description());
+        }
+
         int blockSize = (blockSizeIfKnown > 0) ? blockSizeIfKnown : DEFAULT_BLOCK_SIZE;
 
         try (SizedOutputStream outputStream = provider.get()) {
