@@ -1,5 +1,7 @@
 package com.nthportal.hadoop.hdfs.erase.core;
 
+import org.apache.hadoop.conf.Configuration;
+
 import java.io.IOException;
 
 import static com.google.common.base.Preconditions.*;
@@ -84,6 +86,13 @@ public abstract class OutputStreamErasureSpec extends ErasureSpec {
         public boolean isTerminal() {
             return last.isTerminal();
         }
+
+        @Override
+        public void setConf(Configuration conf) {
+            super.setConf(conf);
+            first.setConf(conf);
+            last.setConf(conf);
+        }
     }
 
     /**
@@ -109,6 +118,12 @@ public abstract class OutputStreamErasureSpec extends ErasureSpec {
         @Override
         public boolean isTerminal() {
             return false;
+        }
+
+        @Override
+        public void setConf(Configuration conf) {
+            super.setConf(conf);
+            spec.setConf(conf);
         }
 
         /** static factory */
