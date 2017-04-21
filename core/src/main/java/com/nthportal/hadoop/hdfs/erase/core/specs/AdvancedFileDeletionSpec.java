@@ -400,7 +400,7 @@ public final class AdvancedFileDeletionSpec extends FileDeletionSpec {
          */
         public static final class Builder {
             private boolean obfuscateFileName = true;
-            private boolean obfuscateFileSize = false;
+            private boolean obfuscateFileSize = true;
 
             private Builder() {}
 
