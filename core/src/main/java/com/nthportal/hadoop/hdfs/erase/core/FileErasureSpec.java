@@ -5,6 +5,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 
@@ -160,6 +161,8 @@ public abstract class FileErasureSpec extends ErasureSpec {
      * A FileErasureSpec which delegates erasure to an {@link OutputStreamErasureSpec}.
      */
     private static final class Delegating extends FileErasureSpec {
+        private static final Logger logger = Logger.getLogger(Delegating.class);
+
         private final OutputStreamErasureSpec spec;
 
         private Delegating(OutputStreamErasureSpec spec) {
@@ -168,6 +171,10 @@ public abstract class FileErasureSpec extends ErasureSpec {
 
         @Override
         public void eraseFile(final FileSystem fs, final Path path) throws IOException {
+            if (isLoggingEnabled()) {
+                logger.info("Erasing file '" + path + "' with " + spec.getClass().getName());
+            }
+
             FileStatus fileStatus = fs.getFileStatus(path);
             final long length = fileStatus.getLen();
             int blockSize = intBlockSize(fileStatus.getBlockSize());

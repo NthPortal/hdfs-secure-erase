@@ -77,8 +77,8 @@ final class ArgParser {
                 Opts.SPEC_SHORT,
                 Opts.SPEC,
                 true,
-                "the name of a `" + FileErasureSpec.class.getSimpleName() + "` "
-                        + "to use (must have a default constructor");
+                "the name of a " + FileErasureSpec.class.getSimpleName() + " "
+                        + "to use (must have a default constructor)");
         opt.setArgName(Names.CLASS_ARG);
         options.addOption(opt);
 
@@ -86,10 +86,16 @@ final class ArgParser {
                 Opts.PROVIDER_SHORT,
                 Opts.PROVIDER,
                 true,
-                "the name of a `" + FileErasureSpecProvider.class.getSimpleName()+ "` "
-                        + "to use (must have a default constructor");
+                "the name of a " + FileErasureSpecProvider.class.getSimpleName()+ " "
+                        + "to use (must have a default constructor)");
         opt.setArgName(Names.CLASS_ARG);
         options.addOption(opt);
+
+        options.addOption(new Option(
+                Opts.VERBOSE_SHORT,
+                Opts.VERBOSE,
+                false,
+                "show verbose erasure information"));
 
         return options;
     }
@@ -119,7 +125,7 @@ final class ArgParser {
 
         static String HELP_SHORT = "h";
         static String HELP = "help";
-        static String VERSION_SHORT = "v";
+        static String VERSION_SHORT = "V";
         static String VERSION = "version";
         static String ITERATIONS_SHORT = "n";
         static String ITERATIONS = "iterations";
@@ -131,6 +137,8 @@ final class ArgParser {
         static String SPEC = "erasure-spec";
         static String PROVIDER_SHORT = "p";
         static String PROVIDER = "erasure-spec-provider";
+        static String VERBOSE_SHORT = "v";
+        static String VERBOSE = "verbose";
     }
 
     private static class Names {
