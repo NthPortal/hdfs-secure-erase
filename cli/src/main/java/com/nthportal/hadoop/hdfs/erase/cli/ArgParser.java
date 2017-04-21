@@ -3,17 +3,37 @@ package com.nthportal.hadoop.hdfs.erase.cli;
 import com.nthportal.hadoop.hdfs.erase.core.FileErasureSpec;
 import org.apache.commons.cli.*;
 
+/**
+ * Utility class for managing command-line options.
+ */
 final class ArgParser {
     private ArgParser() {}
 
+    /**
+     * Lazy initialization for options.
+     */
     private static class Holder {
         private static final Options options = makeOptions();
     }
 
+    /**
+     * Parse the specified command line arguments.
+     *
+     * @param args the arguments to parse
+     * @return a {@link CommandLine} containing the parsed arguments
+     * @throws ParseException if an error occurs while parsing the arguments
+     */
     static CommandLine parse(String[] args) throws ParseException {
         return new GnuParser().parse(Holder.options, args);
     }
 
+    /**
+     * Returns an {@link Options} object with which to parse
+     * command-line arguments.
+     *
+     * @return an Options object with which to parse command-line
+     * arguments
+     */
     private static Options makeOptions() {
         Options options = new Options();
 
@@ -34,7 +54,7 @@ final class ArgParser {
                 Opts.ITERATIONS,
                 true,
                 "the number of times to overwrite the file(s) with random data "
-                        + "(default " + OptionHandler.DEFAULT_ITERATIONS + ")"));
+                        + "(default " + OptionProcessor.DEFAULT_ITERATIONS + ")"));
 
         options.addOption(new Option(
                 Opts.BYTE_PATTERNS_SHORT,
@@ -65,14 +85,25 @@ final class ArgParser {
         return options;
     }
 
+    /**
+     * Prints a help message to stdout.
+     */
     static void printHelp() {
-        new HelpFormatter().printHelp("", Holder.options);
+        printVersion();
+        new HelpFormatter().printHelp("", Holder.options, true);
     }
 
+    /**
+     * Prints version information to stdout.
+     */
     static void printVersion() {
-        // TODO: 4/20/17 impl
+        String version = ArgParser.class.getPackage().getImplementationVersion();
+        System.out.println("hdfs-secure-erase version " + ((version != null) ? version : "UNKNOWN"));
     }
 
+    /**
+     * Command-line options
+     */
     static class Opts {
         static String HELP_SHORT = "h";
         static String HELP = "help";

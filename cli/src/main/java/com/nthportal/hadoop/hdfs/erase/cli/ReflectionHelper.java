@@ -3,6 +3,9 @@ package com.nthportal.hadoop.hdfs.erase.cli;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+/**
+ * Utility class for doing reflection.
+ */
 final class ReflectionHelper {
     private ReflectionHelper() {}
 
