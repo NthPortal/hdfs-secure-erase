@@ -9,7 +9,8 @@ import org.apache.hadoop.fs.Path;
 import java.io.IOException;
 
 /**
- * Static utility for securely erasing files.
+ * {@link org.apache.hadoop.conf.Configurable Configurable} object for
+ * securely erasing files.
  */
 public final class SecureErase extends NonNullConfigured {
     /**

@@ -19,7 +19,7 @@ public abstract class OutputStreamErasureSpec extends ErasureSpec {
      *
      * @param provider         a provider for a {@link SizedOutputStream}
      * @param blockSizeIfKnown the block size of the medium being written to, if
-     *                         if is known.
+     *                         if is known
      * @throws IOException if an I/O error occurs during the erasure
      */
     public abstract void erase(SizedOutputStreamProvider provider, int blockSizeIfKnown) throws IOException;
