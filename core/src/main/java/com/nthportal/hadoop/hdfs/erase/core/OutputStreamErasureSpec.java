@@ -90,8 +90,10 @@ public abstract class OutputStreamErasureSpec extends ErasureSpec {
         @Override
         public void setConf(Configuration conf) {
             super.setConf(conf);
-            first.setConf(conf);
-            last.setConf(conf);
+            if (initialized) {
+                first.setConf(conf);
+                last.setConf(conf);
+            }
         }
     }
 
@@ -123,7 +125,9 @@ public abstract class OutputStreamErasureSpec extends ErasureSpec {
         @Override
         public void setConf(Configuration conf) {
             super.setConf(conf);
-            spec.setConf(conf);
+            if (initialized) {
+                spec.setConf(conf);
+            }
         }
 
         /** static factory */
