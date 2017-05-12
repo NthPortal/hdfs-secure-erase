@@ -76,8 +76,9 @@ public final class SizedOutputStream extends OutputStream {
         do {
             remaining = sizeRemaining.get();
             if (countToWrite > remaining) {
-                throw new IllegalStateException("Insufficient remaining size to write " + countToWrite + " bytes");
+                throw new IllegalStateException("Insufficient remaining size to write " + countToWrite
+                        + " bytes - only " + remaining + " bytes remaining");
             }
-        } while (sizeRemaining.compareAndSet(remaining, remaining - countToWrite));
+        } while (!sizeRemaining.compareAndSet(remaining, remaining - countToWrite));
     }
 }

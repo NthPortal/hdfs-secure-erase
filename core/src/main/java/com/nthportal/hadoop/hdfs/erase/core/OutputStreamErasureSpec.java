@@ -19,7 +19,7 @@ public abstract class OutputStreamErasureSpec extends ErasureSpec {
      *
      * @param provider         a provider for a {@link SizedOutputStream}
      * @param blockSizeIfKnown the block size of the medium being written to, if
-     *                         if is known.
+     *                         if is known
      * @throws IOException if an I/O error occurs during the erasure
      */
     public abstract void erase(SizedOutputStreamProvider provider, int blockSizeIfKnown) throws IOException;
@@ -90,8 +90,10 @@ public abstract class OutputStreamErasureSpec extends ErasureSpec {
         @Override
         public void setConf(Configuration conf) {
             super.setConf(conf);
-            first.setConf(conf);
-            last.setConf(conf);
+            if (initialized) {
+                first.setConf(conf);
+                last.setConf(conf);
+            }
         }
     }
 
@@ -123,7 +125,9 @@ public abstract class OutputStreamErasureSpec extends ErasureSpec {
         @Override
         public void setConf(Configuration conf) {
             super.setConf(conf);
-            spec.setConf(conf);
+            if (initialized) {
+                spec.setConf(conf);
+            }
         }
 
         /** static factory */
