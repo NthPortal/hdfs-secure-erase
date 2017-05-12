@@ -5,6 +5,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hdfs.DistributedFileSystem;
 
 import java.io.IOException;
 
@@ -77,6 +78,12 @@ public final class SecureErase extends NonNullConfigured {
         erasureSpec.setConf(getConf());
 
         try (FileSystem fs = FileSystem.get(getConf())) {
+            if (!(fs instanceof DistributedFileSystem)) {
+                throw new RuntimeException("Unable to get DFS instance - got " + fs.getUri());
+            }
+
+            DistributedFileSystem dfs = (DistributedFileSystem) fs;
+
             // Check that path is a regular file
             Preconditions.checkArgument(fs.exists(path), "File does not exist: " + path);
             Preconditions.checkArgument(fs.getFileStatus(path).isFile(), "Path is not a regular file: " + path);

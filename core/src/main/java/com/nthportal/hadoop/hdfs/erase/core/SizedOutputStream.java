@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * An {@link OutputStream} which only allows at most a certain number
  * of bytes to be written.
  */
-public final class SizedOutputStream extends OutputStream {
+public class SizedOutputStream extends OutputStream {
     private final OutputStream underlying;
     private final long size;
     private final AtomicLong sizeRemaining;
@@ -27,19 +27,19 @@ public final class SizedOutputStream extends OutputStream {
     }
 
     @Override
-    public void write(int b) throws IOException {
+    public final void write(int b) throws IOException {
         checkRemainingSize(1);
         underlying.write(b);
     }
 
     @Override
-    public void write(byte[] b) throws IOException {
+    public final void write(byte[] b) throws IOException {
         checkRemainingSize(b.length);
         underlying.write(b);
     }
 
     @Override
-    public void write(byte[] b, int off, int len) throws IOException {
+    public final void write(byte[] b, int off, int len) throws IOException {
         checkRemainingSize(len);
         underlying.write(b, off, len);
     }

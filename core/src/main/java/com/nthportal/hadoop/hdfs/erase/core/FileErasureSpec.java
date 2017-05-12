@@ -2,12 +2,17 @@ package com.nthportal.hadoop.hdfs.erase.core;
 
 import com.google.common.primitives.Ints;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.BlockLocation;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hdfs.DFSClient;
+import org.apache.hadoop.hdfs.DFSOutputStream;
+import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -179,6 +184,14 @@ public abstract class FileErasureSpec extends ErasureSpec {
                 logger.info("Erasing file '" + path + "' with " + spec.getClass().getName());
             }
 
+            if (!(fs instanceof DistributedFileSystem)) {
+                throw new RuntimeException("File system is not a DFS instance - got " + fs.getUri());
+            }
+            DistributedFileSystem dfs = (DistributedFileSystem) fs;
+            DFSClient client = dfs.getClient();
+
+            BlockHelper.overwriteLocalFile(path);
+
             FileStatus fileStatus = fs.getFileStatus(path);
             final long length = fileStatus.getLen();
             int blockSize = intBlockSize(fileStatus.getBlockSize());
@@ -186,6 +199,8 @@ public abstract class FileErasureSpec extends ErasureSpec {
             spec.erase(new SizedOutputStreamProvider() {
                 @Override
                 public SizedOutputStream get() throws IOException {
+                    DFSOutputStream os = new DFSOutputStream()
+
                     return new SizedOutputStream(fs.create(path), length);
                 }
             }, blockSize);
