@@ -1,13 +1,7 @@
-/*
-
-# Source files
-!/src
-
-# Repo files
-!/*.md
-!.gitignore
-!LICENSE
+# IDE files
+.idea
+*.iml
 
 # Build files
-!pom.xml
-!.travis.yml
+target
+dependency-reduced-pom.xml
